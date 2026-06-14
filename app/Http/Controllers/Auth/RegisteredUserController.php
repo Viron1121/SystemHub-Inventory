@@ -13,15 +13,19 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Role;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
+
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+         return Inertia::render('Auth/Register', [
+            'roles' => Role::all(),
+        ]);
     }
 
     /**
@@ -34,12 +38,14 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'role_id' => 'required|integer|exists:roles,id',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role_id' => $request->role_id,
             'password' => Hash::make($request->password),
         ]);
 

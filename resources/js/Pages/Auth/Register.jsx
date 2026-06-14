@@ -5,10 +5,11 @@ import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Register() {
+export default function Register( { roles }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
+        role_id: '',
         password: '',
         password_confirmation: '',
     });
@@ -58,6 +59,26 @@ export default function Register() {
                     />
 
                     <InputError message={errors.email} className="mt-2" />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel htmlFor="role_id" value="Role" />
+
+                    <select
+                        id="role_id"
+                        name="role_id"
+                        value={data.role_id}
+                        className="mt-1 block w-full"
+                        onChange={(e) => setData('role_id', parseInt(e.target.value))}
+                        required
+                    >
+                        <option value="" disabled >Select a role</option>
+                        {roles.map((role) => (
+                            <option key={role.id} value={role.id}>
+                                {role.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="mt-4">
