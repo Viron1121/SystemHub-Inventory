@@ -1,48 +1,39 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import DataTable from '@/Components/DataTable';
 
-export default function Index({ users }) {
+export default function Index({ categories }) {
     const { delete: destroy } = useForm();
-    const { auth } = usePage().props;
 
     const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this user?')) {
-            destroy(route('users.destroy', id));
+        if (confirm('Are you sure you want to delete this category?')) {
+            destroy(route('categories.destroy', id));
         }
     };
 
     const columns = [
+        {
+            accessorKey: 'id',
+            header: 'ID',
+        },
         {
             accessorKey: 'name',
             header: 'Name',
             cell: info => <span className="font-semibold text-gray-900">{info.getValue()}</span>
         },
         {
-            accessorKey: 'email',
-            header: 'Email',
-        },
-        {
-            accessorKey: 'role.name',
-            header: 'Role',
-            cell: info => (
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800 capitalize">
-                    {info.getValue() || 'N/A'}
-                </span>
-            )
+            accessorKey: 'description',
+            header: 'Description',
         },
         {
             id: 'actions',
             header: () => <div className="text-right">Actions</div>,
             cell: info => {
-                const user = info.row.original;
+                const category = info.row.original;
                 return (
                     <div className="text-right space-x-2">
-                        <Link href={route('users.show', user.id)} className="text-blue-600 hover:text-blue-900 mr-2">View</Link>
-                        <Link href={route('users.edit', user.id)} className="text-indigo-600 hover:text-indigo-900 mr-2">Edit</Link>
-                        {user.id !== auth.user.id && (
-                            <button onClick={() => handleDelete(user.id)} className="text-red-600 hover:text-red-900">Delete</button>
-                        )}
+                        <Link href={route('categories.edit', category.id)} className="text-indigo-600 hover:text-indigo-900 mr-2">Edit</Link>
+                        <button onClick={() => handleDelete(category.id)} className="text-red-600 hover:text-red-900">Delete</button>
                     </div>
                 );
             }
@@ -50,8 +41,8 @@ export default function Index({ users }) {
     ];
 
     return (
-        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Users</h2>}>
-            <Head title="Users" />
+        <AuthenticatedLayout header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Categories</h2>}>
+            <Head title="Categories" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -59,20 +50,20 @@ export default function Index({ users }) {
                         <div className="p-6 bg-white border-b border-gray-200">
                             
                             <div className="flex justify-between items-center mb-6">
-                                <h3 className="text-lg font-medium text-gray-900">All Users</h3>
+                                <h3 className="text-lg font-medium text-gray-900">All Categories</h3>
                                 <Link 
-                                    href={route('users.create')} 
+                                    href={route('categories.create')} 
                                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                                 >
-                                    Add User
+                                    Add Category
                                 </Link>
                             </div>
 
                             <DataTable 
                                 columns={columns} 
-                                data={users} 
+                                data={categories} 
                                 showSearch={true} 
-                                searchPlaceholder="Search users by name, email..."
+                                searchPlaceholder="Search categories by name..."
                             />
 
                         </div>
@@ -82,3 +73,4 @@ export default function Index({ users }) {
         </AuthenticatedLayout>
     );
 }
+
