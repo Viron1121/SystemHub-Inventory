@@ -1,11 +1,21 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Users\UserController;
-use App\Http\Controllers\Roles\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\Sale;
+use App\Models\Product;
+use Carbon\Carbon;
+use App\Http\Controllers\Users\UserController;
+use App\Http\Controllers\Roles\RoleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\POSController;
+use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -17,13 +27,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $today = \Carbon\Carbon::today();
+    $today = Carbon::today();
     
-    $totalSalesToday = \App\Models\Sale::whereDate('created_at', $today)->where('status', 'completed')->count();
-    $revenueToday = \App\Models\Sale::whereDate('created_at', $today)->where('status', 'completed')->sum('total_amount');
-    $totalProducts = \App\Models\Product::count();
-    $lowStockCount = \App\Models\Product::whereRaw('stock_quantity <= reorder_level')->where('is_active', true)->count();
-    $recentTransactions = \App\Models\Sale::with('user')->latest()->take(5)->get();
+    $totalSalesToday = Sale::whereDate('created_at', $today)->where('status', 'completed')->count();
+    $revenueToday = Sale::whereDate('created_at', $today)->where('status', 'completed')->sum('total_amount');
+    $totalProducts = Product::count();
+    $lowStockCount = Product::whereRaw('stock_quantity <= reorder_level')->where('is_active', true)->count();
+    $recentTransactions = Sale::with('user')->latest()->take(5)->get();
 
     return Inertia::render('Dashboard', [
         'totalSalesToday' => $totalSalesToday,
@@ -45,25 +55,25 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class);
     
     // Inventory Routes
-    Route::resource('categories', \App\Http\Controllers\CategoryController::class);
-    Route::resource('suppliers', \App\Http\Controllers\SupplierController::class);
-    Route::resource('products', \App\Http\Controllers\ProductController::class);
+    Route::resource('categories', CategoryController::class);
+    Route::resource('suppliers', SupplierController::class);
+    Route::resource('products', ProductController::class);
     
     // Stock Movements
-    Route::get('/stock-movements', [\App\Http\Controllers\StockMovementController::class, 'index'])->name('stock-movements.index');
-    Route::get('/stock-movements/create', [\App\Http\Controllers\StockMovementController::class, 'create'])->name('stock-movements.create');
-    Route::post('/stock-movements', [\App\Http\Controllers\StockMovementController::class, 'store'])->name('stock-movements.store');
+    Route::get('/stock-movements', [StockMovementController::class, 'index'])->name('stock-movements.index');
+    Route::get('/stock-movements/create', [StockMovementController::class, 'create'])->name('stock-movements.create');
+    Route::post('/stock-movements', [StockMovementController::class, 'store'])->name('stock-movements.store');
     
     // POS
-    Route::get('/pos', [\App\Http\Controllers\POSController::class, 'index'])->name('pos.index');
-    Route::post('/pos/checkout', [\App\Http\Controllers\POSController::class, 'checkout'])->name('pos.checkout');
+    Route::get('/pos', [POSController::class, 'index'])->name('pos.index');
+    Route::post('/pos/checkout', [POSController::class, 'checkout'])->name('pos.checkout');
     
     // Sales History
-    Route::get('/sales', [\App\Http\Controllers\SaleController::class, 'index'])->name('sales.index');
-    Route::get('/sales/{sale}', [\App\Http\Controllers\SaleController::class, 'show'])->name('sales.show');
+    Route::get('/sales', [SaleController::class, 'index'])->name('sales.index');
+    Route::get('/sales/{sale}', [SaleController::class, 'show'])->name('sales.show');
     
     // Reports
-    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
 });
 
 

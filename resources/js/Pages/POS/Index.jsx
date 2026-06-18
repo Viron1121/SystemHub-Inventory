@@ -70,9 +70,9 @@ export default function Index({ products }) {
                         </div>
                     )}
 
-                    <div className="flex flex-col md:flex-row gap-6">
+                    <div className="flex flex-col lg:flex-row gap-6">
                         {/* Products Section */}
-                        <div className="flex-1">
+                        <div className="flex-grow basis-0">
                             <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
                                 <input 
                                     type="text" 
@@ -107,7 +107,7 @@ export default function Index({ products }) {
                         </div>
 
                         {/* Cart Section */}
-                        <div className="w-full md:w-96">
+                        <div className="w-full lg:w-96 flex-shrink-0">
                             <Cart 
                                 cart={cart} 
                                 updateQuantity={updateQuantity} 
