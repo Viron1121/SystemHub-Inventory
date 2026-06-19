@@ -57,6 +57,9 @@ jobs:
 
       - name: Run migrations
         run: php artisan migrate --force
+
+      - name: Seed roles
+        run: php artisan db:seed --class=RoleSeeder --force
         env:
           DB_CONNECTION: mysql
           DB_HOST: 127.0.0.1
