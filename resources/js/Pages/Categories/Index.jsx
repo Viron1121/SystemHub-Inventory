@@ -32,7 +32,9 @@ export default function Index({ categories }) {
                 const category = info.row.original;
                 return (
                     <div className="text-right space-x-2">
+
                         <Link href={route('categories.edit', category.id)} className="text-indigo-600 hover:text-indigo-900 mr-2">Edit</Link>
+                        
                         <button onClick={() => handleDelete(category.id)} className="text-red-600 hover:text-red-900">Delete</button>
                     </div>
                 );

@@ -1,6 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import DataTable from '@/Components/DataTable';
+import BaseLineChart from '../Components/Charts/BaseLineChart';
 
 export default function Dashboard({ 
     totalSalesToday, 
@@ -53,6 +54,16 @@ export default function Dashboard({
         }
     ];
 
+    const salesTrend = [
+        { date: "Mon", revenue: 520 },
+        { date: "Tue", revenue: 640 },
+        { date: "Wed", revenue: 430 },
+        { date: "Thu", revenue: 800 },
+        { date: "Fri", revenue: 760 },
+        { date: "Sat", revenue: 920 },
+        { date: "Sun", revenue: 690 },
+    ];
+
     return (
         <AuthenticatedLayout
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard Overview</h2>}
@@ -84,26 +95,47 @@ export default function Dashboard({
                             <p className="text-3xl font-bold text-red-600 mt-2">{lowStockCount}</p>
                         </div>
                     </div>
-
+                    
                     {/* Recent Transactions Table */}
-                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900">
-                            <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-lg font-bold">Recent Transactions</h3>
-                                <Link href={route('sales.index')} className="text-indigo-600 hover:text-indigo-900 text-sm">
-                                    View All
-                                </Link>
+                    <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
+                        {/* Left */}
+                        <div className="lg:col-span-6">
+                            <div className="bg-white rounded-xl shadow-sm border h-full p-6">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-lg font-bold">Recent Transactions</h3>
+
+                                    <Link
+                                        href={route('sales.index')}
+                                        className="text-indigo-600 hover:text-indigo-900 text-sm"
+                                    >
+                                        View All
+                                    </Link>
+                                </div>
+
+                                <DataTable
+                                    columns={columns}
+                                    data={recentTransactions || []}
+                                    showSearch={false}
+                                    defaultPageSize={5}
+                                    pageSizeOptions={[5, 10, 20]}
+                                />
                             </div>
-                            
-                            <DataTable 
-                                columns={columns} 
-                                data={recentTransactions || []} 
-                                showSearch={false} 
-                                defaultPageSize={5} 
-                                pageSizeOptions={[5, 10, 20]} 
-                            />
+                        </div>
+
+                        {/* Right */}
+                        <div className="lg:col-span-4">
+                            <div className="bg-white rounded-xl shadow-sm border h-full p-6">
+                                <BaseLineChart
+                                    title="Sales Trend"
+                                    data={salesTrend}
+                                    xKey="date"
+                                    dataKey="revenue"
+                                />
+                            </div>
                         </div>
                     </div>
+
+                   
 
                 </div>
             </div>
